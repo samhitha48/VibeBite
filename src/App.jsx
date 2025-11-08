@@ -1,4 +1,6 @@
-import { Filter } from "./components/Filter/Filter";
+import { Filter } from "./components/Filter/Filter"
+import Button from "./components/Button/Button";
+import Randomizer from "./components/Randomizer/Randomizer";
 
 const features = [
   {
@@ -28,6 +30,10 @@ export default function App() {
           <p>Logo here</p>
         </header>
         <div className="flex-1 space-y-6 text-center py-6">
+          <div id="buttons-container" className="flex gap-4 justify-center">
+            <Button text="I'll pick what I want" />
+            <Randomizer />
+          </div>
           <p className="mx-auto max-w-2xl text-lg">This is VibeBite.</p>
           <Filter />
         </div>
