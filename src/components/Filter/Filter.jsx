@@ -1,7 +1,16 @@
 import { useState } from "react";
 import { Checkbox } from "../Checkbox/Checkbox";
+import LocationInput from "../Input/LocationInput";
+import CuisineDropdown from "../Input/CuisineDropdown";
+import Slider from "../Slider/Slider";
 
-const Filter = () => {
+const Filter = ({
+  filters = { location: "", categories: [], radius: 1600, price: 2 },
+  onLocationChange = () => {},
+  onCuisineSelect = () => {},
+  onRadiusChange = () => {},
+  onPriceChange = () => {},
+}) => {
   const [moods, setMoods] = useState([]);
 
   const handleMood = (mood) => {
@@ -57,6 +66,16 @@ const Filter = () => {
     },
   ];
 
+  const radiusValue =
+    typeof filters.radius === "number" && Number.isFinite(filters.radius)
+      ? filters.radius
+      : 1600;
+
+  const priceValue =
+    typeof filters.price === "number" && Number.isFinite(filters.price)
+      ? filters.price
+      : 2;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4 p-6 shadow-[0_0_15px_rgba(0,0,0,0.3)] rounded-lg">
       <div className="col-span-full">
@@ -70,6 +89,30 @@ const Filter = () => {
           the rest. Then add your location and any filters to fine-tune your
           food match.
         </p>
+      </div>
+      <div className="col-span-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <LocationInput onValidLocation={onLocationChange} />
+        <CuisineDropdown onSelect={onCuisineSelect} />
+      </div>
+      <div className="col-span-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Slider
+          label="Search radius"
+          min={400}
+          max={40000}
+          step={400}
+          measurement="meters"
+          value={radiusValue}
+          valueSetter={onRadiusChange}
+        />
+        <Slider
+          label="Price tier"
+          min={1}
+          max={4}
+          step={1}
+          value={priceValue}
+          measurement=""
+          valueSetter={onPriceChange}
+        />
       </div>
       {moodList.map((item) => {
         return (

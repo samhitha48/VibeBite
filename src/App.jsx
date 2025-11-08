@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Filter } from "./components/Filter/Filter";
 import Button from "./components/Button/Button";
 import Randomizer from "./components/Randomizer/Randomizer";
@@ -23,12 +23,46 @@ const features = [
 
 export default function App() {
   const [showFilter, setShowFilter] = useState(false);
+  const [manualFilters, setManualFilters] = useState({
+    location: "",
+    categories: [],
+    radius: 5,
+    price: 2,
+  });
   const date = new Date();
   const currentYear = date.getFullYear();
 
   const toggleFilter = () => {
     setShowFilter((prev) => !prev);
   };
+
+  const handleLocationChange = useCallback((nextLocation) => {
+    setManualFilters((prev) => ({
+      ...prev,
+      location: nextLocation,
+    }));
+  }, []);
+
+  const handleCuisineSelect = useCallback((selectedAlias) => {
+    setManualFilters((prev) => ({
+      ...prev,
+      categories: selectedAlias ? [selectedAlias] : [],
+    }));
+  }, []);
+
+  const handleRadiusChange = useCallback((nextRadius) => {
+    setManualFilters((prev) => ({
+      ...prev,
+      radius: nextRadius,
+    }));
+  }, []);
+
+  const handlePriceChange = useCallback((nextPrice) => {
+    setManualFilters((prev) => ({
+      ...prev,
+      price: nextPrice,
+    }));
+  }, []);
 
   return (
     <main className="grid grid-cols-12 gap-6 mx-auto max-w-[1440px] bg-white h-screen flex-col gap-12 rounded-lg shadow-md">
@@ -46,7 +80,13 @@ export default function App() {
               showFilter ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
             }`}
           >
-            <Filter />
+            <Filter
+              filters={manualFilters}
+              onLocationChange={handleLocationChange}
+              onCuisineSelect={handleCuisineSelect}
+              onRadiusChange={handleRadiusChange}
+              onPriceChange={handlePriceChange}
+            />
           </div>
         </div>
         <footer className="flex justify-center py-4">
