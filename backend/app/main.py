@@ -15,7 +15,26 @@ YELP_CACHE_TTL_SECONDS = 10800
 YELP_CACHE_MAXSIZE = 1000
 _yelp_cache = TTLCache(maxsize=YELP_CACHE_MAXSIZE, ttl=YELP_CACHE_TTL_SECONDS)
 _yelp_cache_lock = Lock()
+# backend/app/main.py
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI()
+
+# allow localhost and your Netlify/Render domains
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "https://graceful-gingersnap-e9f2ff.netlify.app/"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+# Project API
 app = FastAPI(title="VibeBite API", version="0.1.0")
 
 
@@ -26,14 +45,16 @@ async def health_check() -> dict[str, str]:
 
 @app.get("/vibes", tags=["Vibes"])
 async def list_vibes() -> dict[str, list[str]]:
-    mock_vibes = [
-        "Chill brunch",
-        "Sunset rooftop",
-        "Late-night coding",
-        "Rainy day focus",
-        "Dance-floor energy",
-    ]
-    return {"vibes": mock_vibes}
+    """Return sample vibe names to keep the frontend unblocked."""
+    return {
+        "vibes": [
+            "Chill brunch",
+            "Sunset rooftop",
+            "Late-night coding",
+            "Rainy day focus",
+            "Dance-floor energy",
+        ]
+    }
 
 
 @app.get("/yelp/search", tags=["Yelp"])
