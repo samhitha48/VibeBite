@@ -3,30 +3,16 @@ import { Filter } from "./components/Filter/Filter";
 import Button from "./components/Button/Button";
 import Randomizer from "./components/Randomizer/Randomizer";
 import RandomSelection from "./components/RandomSelection/RandomSelection";
-
-const features = [
-  {
-    title: "Curated Playlists",
-    description:
-      "Fuel every gathering with playlists that match the mood and keep the vibes high.",
-  },
-  {
-    title: "Crowd-Sourced Favorites",
-    description:
-      "Let your crew vote, request, and remix the soundtrack in real time.",
-  },
-  {
-    title: "Instant Ambience",
-    description:
-      "Pair food, lighting, and music recommendations tuned for your venue.",
-  },
-];
+import Card from "./components/Card/Card";
 
 export default function App() {
   const [showFilter, setShowFilter] = useState(false);
+  const [results, setResults] = useState([]);
+
   const [manualFilters, setManualFilters] = useState({
     location: "",
     categories: [],
+    attributes: [],
     radius: 5,
     price: 2,
   });
@@ -47,9 +33,16 @@ export default function App() {
   }, []);
 
   const handleCuisineSelect = useCallback((selectedAlias) => {
+    const normalizedCategories = selectedAlias
+      ? selectedAlias
+          .split(",")
+          .map((alias) => alias.trim())
+          .filter(Boolean)
+      : [];
+
     setManualFilters((prev) => ({
       ...prev,
-      categories: selectedAlias ? [selectedAlias] : [],
+      categories: normalizedCategories,
     }));
   }, []);
 
@@ -88,7 +81,7 @@ export default function App() {
           />
         </div>
         <div
-          className={`col-span-full md:col-start-3 md:col-span-8 overflow-hidden transition-all duration-500 ease-in-out ${
+          className={`col-span-full md:col-start-2 md:col-span-10 lg:col-start-3 lg:col-span-8 overflow-hidden transition-all duration-500 ease-in-out ${
             showFilter ? "max-h-[2000px] opacity-100 py-3" : "max-h-0 opacity-0"
           }`}
         >
@@ -115,6 +108,19 @@ export default function App() {
             handleSubmit={handleSubmit}
           />
         </div>
+        {/* Results */}
+        {results.length > 0 && (
+          <>
+            <h2 className="col-span-full text-2xl font-bold px-6 mt-6">
+              Results
+            </h2>
+            <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4 px-6 pb-6">
+              {results.map((result) => (
+                <Card key={result.id} {...result} />
+              ))}
+            </div>
+          </>
+        )}
       </main>
       <footer className="flex justify-center py-4">
         &copy; {currentYear} VibeBite

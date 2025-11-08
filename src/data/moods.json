@@ -1,0 +1,124 @@
+{
+  "mood_map": [
+    {
+      "mood": "Celebration",
+      "emoji": "🎉",
+      "categories": ["newamerican", "cocktailbars", "wine_bars", "tapasmallplates"],
+      "attributes": [
+        "reservation",
+        "waitlist_reservation",
+        "ambience_trendy",
+        "ambience_upscale",
+        "happy_hour",
+        "liked_by_wine",
+        "noise_level_loud"
+      ],
+      "description": "High energy, celebratory settings with drinks, buzz, and room to toast."
+    },
+    {
+      "mood": "Treat Yourself",
+      "emoji": "🍰",
+      "categories": ["french", "italian", "desserts", "wine_bars"],
+      "attributes": [
+        "reservation",
+        "ambience_classy",
+        "ambience_upscale",
+        "ambience_romantic",
+        "liked_by_wine",
+        "noise_level_quiet",
+        "accepts_credit_cards"
+      ],
+      "description": "Fine dining, beautiful plating, luxurious desserts, and indulgent cocktails."
+    },
+    {
+      "mood": "Spicy",
+      "emoji": "🌶️",
+      "categories": ["korean", "thai", "szechuan", "indpak"],
+      "attributes": [
+        "liked_by_beer",
+        "happy_hour",
+        "ambience_trendy",
+        "noise_level_average"
+      ],
+      "description": "Bold flavors, chili-forward dishes, and fun, lively dining rooms."
+    },
+    {
+      "mood": "Fall Feels",
+      "emoji": "🍂",
+      "categories": ["tradamerican", "newamerican", "breakfast_brunch", "cafes"],
+      "attributes": [
+        "ambience_casual",
+        "ambience_intimate",
+        "noise_level_quiet",
+        "outdoor_seating",
+        "parking_lot"
+      ],
+      "description": "Warm, cozy, nostalgic comfort dishes and autumn vibes."
+    },
+    {
+      "mood": "Light 'n' Fresh",
+      "emoji": "🥗",
+      "categories": ["mediterranean", "greek", "vegan", "salad"],
+      "attributes": [
+        "liked_by_vegetarians",
+        "restaurants_takeout",
+        "restaurants_delivery",
+        "outdoor_seating",
+        "noise_level_quiet"
+      ],
+      "description": "Clean, crisp, refreshing plates — feel good food without the heaviness."
+    },
+    {
+      "mood": "Date Night",
+      "emoji": "💕",
+      "categories": ["italian", "japanese", "wine_bars", "cocktailbars"],
+      "attributes": [
+        "reservation",
+        "ambience_romantic",
+        "ambience_intimate",
+        "liked_by_dates",
+        "liked_by_wine",
+        "noise_level_quiet"
+      ],
+      "description": "Soft lighting, shared plates, long conversations, and mood-setting ambiance."
+    },
+    {
+      "mood": "Greasy Goodness",
+      "emoji": "🍔",
+      "categories": ["burgers", "bbq", "pizza", "tradamerican"],
+      "attributes": [
+        "restaurants_takeout",
+        "parking_lot",
+        "parking_street",
+        "noise_level_average",
+        "accepts_credit_cards"
+      ],
+      "description": "Burgers, fries, smoke, sauce, and the most satisfying cheat-day eats."
+    },
+    {
+      "mood": "Quick & Easy",
+      "emoji": "⚡️",
+      "categories": ["mexican", "sandwiches", "pizza", "hotdogs"],
+      "attributes": [
+        "restaurants_takeout",
+        "restaurants_delivery",
+        "parking_street",
+        "wifi_free"
+      ],
+      "description": "Fast, convenient, no-frills spots that get you fed and back to living."
+    },
+    {
+      "mood": "Cozy",
+      "emoji": "☕️",
+      "categories": ["cafes", "coffee", "ramen", "breakfast_brunch"],
+      "attributes": [
+        "ambience_intimate",
+        "ambience_casual",
+        "noise_level_quiet",
+        "wifi_free",
+        "outdoor_seating"
+      ],
+      "description": "Warm, comforting, good-for-the-soul spaces you want to linger in."
+    }
+  ]
+}
