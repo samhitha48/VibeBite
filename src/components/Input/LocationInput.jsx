@@ -10,6 +10,7 @@ export default function LocationInput({ onValidLocation }) {
 
       if (!trimmed) {
         setError("");
+        onValidLocation?.("");
         return false;
       }
 
