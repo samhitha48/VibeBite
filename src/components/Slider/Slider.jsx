@@ -23,7 +23,17 @@ export default function Slider({
   return (
     <div className="w-full max-w-md flex flex-col gap-2">
       <label className="text-lg">
-        {label}: <span className="text-black">{value}</span> {measurement}
+        {label}:{" "}
+        {measurement === "$" ? (
+          <span className="text-black">
+            {measurement}
+            {value}
+          </span>
+        ) : (
+          <span className="text-black">
+            {value} {measurement}
+          </span>
+        )}
       </label>
 
       <input
@@ -61,8 +71,7 @@ export default function Slider({
           border: none;
           position: relative;
           z-index: 1;
-          margin: 0;
-          transform: translateY(-50%);
+          margin-top: -6px;
         }
 
         input[type="range"]::-moz-range-track {
@@ -80,7 +89,6 @@ export default function Slider({
           border: none;
           position: relative;
           z-index: 1;
-          transform: translateY(0));
         }
       `}</style>
     </div>
