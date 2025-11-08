@@ -4,6 +4,7 @@
   "description": "VibeBite React app with Tailwind CSS",
   "type": "module",
   "scripts": {
+    "setup": "bash scripts/setup.sh",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
@@ -12,6 +13,11 @@
   "license": "MIT",
   "dependencies": {
     "clsx": "^2.1.1",
+    "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-brands-svg-icons": "^7.1.0",
+    "@fortawesome/free-regular-svg-icons": "^7.1.0",
+    "@fortawesome/free-solid-svg-icons": "^7.1.0",
+    "@fortawesome/react-fontawesome": "^3.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
