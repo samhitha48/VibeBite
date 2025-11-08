@@ -1,0 +1,32 @@
+{
+  "core": [
+    { "alias": "tradamerican,newamerican",  "label": "American",                      "emoji": "🍔" },
+    { "alias": "breakfast_brunch",          "label": "Breakfast & Brunch",            "emoji": "🍳" },
+    { "alias": "cafes,coffee",              "label": "Cafes & Coffee",                "emoji": "☕️" },
+    { "alias": "desserts",                  "label": "Desserts",                      "emoji": "🍰" },
+    { "alias": "icecream",                  "label": "Ice Cream & Frozen Yogurt",     "emoji": "🍨" },
+        
+    { "alias": "bars",                      "label": "Bars",                          "emoji": "🍻" },
+    { "alias": "cocktailbars",              "label": "Cocktail Bars",                 "emoji": "🍸" },
+    { "alias": "wine_bars",                 "label": "Wine Bars",                     "emoji": "🍷" },
+        
+    { "alias": "italian",                   "label": "Italian",                       "emoji": "🍝" },
+    { "alias": "pizza",                     "label": "Pizza",                         "emoji": "🍕" },
+    { "alias": "mexican",                   "label": "Mexican",                       "emoji": "🌮" },
+    { "alias": "tex-mex",                   "label": "Tex-Mex",                       "emoji": "🌯" },
+    { "alias": "japanese",                  "label": "Japanese",                      "emoji": "🍱" },
+    { "alias": "ramen",                     "label": "Ramen",                         "emoji": "🍜" },
+    { "alias": "sushi",                     "label": "Sushi Bars",                    "emoji": "🍣" },
+    { "alias": "korean",                    "label": "Korean",                        "emoji": "🌶️" },
+    { "alias": "thai",                      "label": "Thai",                          "emoji": "🛖" },
+    { "alias": "vietnamese",                "label": "Vietnamese",                    "emoji": "🥢" },
+    { "alias": "indpak",                    "label": "Indian",                        "emoji": "🍛" },
+    { "alias": "mediterranean",             "label": "Mediterranean",                 "emoji": "🥙" },
+    { "alias": "greek",                     "label": "Greek",                         "emoji": "🥗" },
+    { "alias": "middleeastern",             "label": "Middle Eastern",                "emoji": "🫓" },
+    { "alias": "vegan",                     "label": "Vegan",                         "emoji": "🌱" },
+    { "alias": "vegetarian",                "label": "Vegetarian",                    "emoji": "🥦" },
+    { "alias": "spanish,newamerican",       "label": "Tapas/Small Plates",            "emoji": "🍽️" },
+    { "alias": "latin,seafood",             "label": "Peruvian",                      "emoji": "🍤" }
+  ]
+}
