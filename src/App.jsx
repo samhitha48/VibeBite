@@ -96,9 +96,7 @@ export default function App() {
         : [...currentMoods, moodName];
 
       const aggregatedAttributes = Array.from(
-        new Set(
-          nextMoods.flatMap((mood) => getMoodFilters(mood).attributes)
-        )
+        new Set(nextMoods.flatMap((mood) => getMoodFilters(mood).attributes))
       );
 
       return {
