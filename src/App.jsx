@@ -102,10 +102,12 @@ export default function App() {
           }`}
         >
           <RandomSelection
+            showFilter={showFilter}
             randomSelection={randomSelection}
             onRadiusChange={handleRadiusChange}
             onLocationChange={handleLocationChange}
             handleSubmit={handleSubmit}
+            filters={manualFilters}
           />
         </div>
         {/* Results */}

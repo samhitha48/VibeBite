@@ -7,7 +7,18 @@ export default function RandomSelection({
   onRadiusChange,
   onLocationChange,
   handleSubmit,
+  filters = {
+    location: "",
+    categories: [],
+    attributes: [],
+    radius: 1600,
+    price: 2,
+  },
 }) {
+  const radiusValue =
+    typeof filters.radius === "number" && Number.isFinite(filters.radius)
+      ? filters.radius
+      : 1600;
   return (
     <div className="flex flex-col gap-12 mx-4 p-6 shadow-[0_0_15px_rgba(0,0,0,0.3)] rounded-lg">
       <h3 className="block text-xl w-full text-left">
@@ -19,10 +30,13 @@ export default function RandomSelection({
       <div className="flex gap-16">
         <LocationInput onValidLocation={onLocationChange} />
         <Slider
-          label={"Distance"}
-          measurement={"Miles"}
-          value={0}
-          setter={onRadiusChange}
+          label="Location (zip code)"
+          measurement="meters"
+          min={400}
+          max={40000}
+          step={400}
+          value={radiusValue}
+          valueSetter={onRadiusChange}
         />
       </div>
       <div className="max-w-s">
