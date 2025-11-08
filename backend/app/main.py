@@ -85,3 +85,78 @@ async def yelp_search(
         return JSONResponse(content=data, headers={"X-Cache": "MISS", "Cache-Control": f"public, max-age={YELP_CACHE_TTL_SECONDS}"})
     except requests.RequestException as e:
         return {"error": "Failed to fetch data from Yelp API", "details": str(e)}
+
+
+# Dialogflow ES Fulfillment webhook: queries Yelp and returns fulfillmentText
+@app.post("/dialogflow/es-webhook", tags=["Dialogflow"])
+async def dialogflow_es_webhook(request: Request):
+    """
+    Dialogflow ES Fulfillment webhook.
+    Extracts parameters (location, cuisine/term, price, open_now) from the ES payload,
+    queries Yelp (reusing the same API key and cache pattern), and returns fulfillmentText.
+    """
+    body = await request.json()
+    query_result = body.get("queryResult", {}) or {}
+    params_in = query_result.get("parameters", {}) or {}
+
+    # Extract parameters from Dialogflow ES
+    location = params_in.get("location") or "Denver"
+    term = params_in.get("cuisine") or params_in.get("term") or "food"
+    price = params_in.get("price")
+    open_now = params_in.get("open_now")
+    limit = 5
+
+    # Prepare Yelp call (reuse env var)
+    api_key = os.getenv("YELP_API_KEY")
+    if not api_key:
+        return JSONResponse({"fulfillmentText": "Yelp API key is not configured."})
+
+    url = "https://api.yelp.com/v3/businesses/search"
+    headers = {"Authorization": f"Bearer {api_key}"}
+    params = {
+        "location": location,
+        "term": term,
+        "limit": limit,
+        "price": price,
+        "open_now": open_now,
+    }
+    # Remove None values
+    params = {k: v for k, v in params.items() if v is not None}
+
+    # Cache key identical to /yelp/search behavior
+    key_source = json.dumps(params, sort_keys=True, separators=(",", ":"))
+    cache_key = hashlib.sha256(key_source.encode("utf-8")).hexdigest()
+
+    with _yelp_cache_lock:
+        cached = _yelp_cache.get(cache_key)
+    if cached is not None:
+        businesses = cached.get("businesses", [])
+    else:
+        try:
+            resp = requests.get(url, headers=headers, params=params, timeout=12)
+            resp.raise_for_status()
+            data = resp.json()
+            with _yelp_cache_lock:
+                _yelp_cache[cache_key] = data
+            businesses = data.get("businesses", [])
+        except requests.RequestException:
+            return JSONResponse({"fulfillmentText": f"I couldn't reach Yelp right now. Please try again."})
+
+    # Build a short, user-friendly response
+    if not businesses:
+        text = f"I couldn’t find {term} places in {location} right now."
+    else:
+        top = businesses[:3]
+        parts = []
+        for b in top:
+            name = b.get("name")
+            rating = b.get("rating")
+            price_sym = b.get("price", "")
+            addr = ", ".join((b.get("location") or {}).get("display_address", [])[:2])
+            snippet = f"{name} (⭐ {rating}{f', {price_sym}' if price_sym else ''})"
+            if addr:
+                snippet += f" — {addr}"
+            parts.append(snippet)
+        text = f"Here are some {term} spots in {location}: " + "; ".join(parts)
+
+    return JSONResponse({"fulfillmentText": text})
