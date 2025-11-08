@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { Filter } from "./components/Filter/Filter";
 import Button from "./components/Button/Button";
 import Randomizer from "./components/Randomizer/Randomizer";
@@ -6,6 +6,31 @@ import RandomSelection from "./components/RandomSelection/RandomSelection";
 import Card from "./components/Card/Card";
 import { getMoodFilters } from "./utils/moodHelpers";
 import logo from './images/logo.png'
+
+import { getMoodFilters, mergeMoodWithFilters } from "./utils/moodHelpers";
+
+const buildSearchParams = (filters) => {
+  const params = new URLSearchParams();
+  if (filters.location) {
+    params.set("location", filters.location);
+  }
+  if (Array.isArray(filters.categories) && filters.categories.length) {
+    params.set("categories", filters.categories.join(","));
+  }
+  if (Array.isArray(filters.attributes) && filters.attributes.length) {
+    params.set("attributes", filters.attributes.join(","));
+  }
+  if (Array.isArray(filters.moods) && filters.moods.length) {
+    params.set("moods", filters.moods.join(","));
+  }
+  if (filters.radius) {
+    params.set("radius", `${filters.radius}`);
+  }
+  if (filters.price) {
+    params.set("price", `${filters.price}`);
+  }
+  return params;
+};
 
 export default function App() {
   const [showFilter, setShowFilter] = useState(false);
@@ -85,36 +110,44 @@ export default function App() {
     });
   }, []);
 
-  const searchParams = useMemo(() => {
-    const params = new URLSearchParams();
-    if (manualFilters.location) {
-      params.set("location", manualFilters.location);
+  const handleRandomMoodSelect = useCallback((nextMood, previousMood) => {
+    if (!nextMood) {
+      setManualFilters((prev) => {
+        const currentMoods = Array.isArray(prev.moods) ? prev.moods : [];
+        const filteredMoods = currentMoods.filter(
+          (mood) => mood !== previousMood
+        );
+        return {
+          ...prev,
+          moods: filteredMoods,
+        };
+      });
+      return;
     }
-    if (
-      Array.isArray(manualFilters.categories) &&
-      manualFilters.categories.length
-    ) {
-      params.set("categories", manualFilters.categories.join(","));
-    }
-    if (
-      Array.isArray(manualFilters.attributes) &&
-      manualFilters.attributes.length
-    ) {
-      params.set("attributes", manualFilters.attributes.join(","));
-    }
-    if (Array.isArray(manualFilters.moods) && manualFilters.moods.length) {
-      params.set("moods", manualFilters.moods.join(","));
-    }
-    if (manualFilters.radius) {
-      params.set("radius", `${manualFilters.radius}`);
-    }
-    if (manualFilters.price) {
-      params.set("price", `${manualFilters.price}`);
-    }
-    return params;
-  }, [manualFilters]);
 
-  const handleSearch = useCallback(async () => {
+    setManualFilters((prev) => {
+      const merged = mergeMoodWithFilters(nextMood, prev);
+      const currentMoods = Array.isArray(prev.moods) ? prev.moods : [];
+      const sanitizedMoods = currentMoods.filter(
+        (mood) => mood !== previousMood
+      );
+      return {
+        ...merged,
+        moods: Array.from(new Set([...sanitizedMoods, nextMood])),
+      };
+    });
+  }, []);
+
+  const handleSearch = useCallback(
+    async (overrideFilters) => {
+      const candidateFilters =
+        overrideFilters &&
+        typeof overrideFilters === "object" &&
+        typeof overrideFilters.preventDefault !== "function"
+          ? overrideFilters
+          : undefined;
+      const activeFilters = candidateFilters ?? manualFilters;
+      const searchParams = buildSearchParams(activeFilters);
     setIsSearching(true);
     setSearchError("");
     try {
@@ -203,7 +236,19 @@ export default function App() {
     } finally {
       setIsSearching(false);
     }
-  }, [searchParams]);
+    },
+    [manualFilters]
+  );
+
+  const handleRandomSelectionSearch = useCallback(
+    (enhancedFilters) => {
+      if (!enhancedFilters) {
+        return;
+      }
+      handleSearch(enhancedFilters);
+    },
+    [handleSearch]
+  );
 
   return (
     <div className="h-screen flex flex-col bg-white">
@@ -220,6 +265,7 @@ export default function App() {
             showFilter={showFilter}
             randomSelection={randomSelection}
             setRandomSelection={setRandomSelection}
+            onMoodSelect={handleRandomMoodSelect}
           />
         </div>
         <div
@@ -251,8 +297,9 @@ export default function App() {
             randomSelection={randomSelection}
             onRadiusChange={handleRadiusChange}
             onLocationChange={handleLocationChange}
-            handleSubmit={handleSearch}
             filters={manualFilters}
+            onSearch={handleRandomSelectionSearch}
+            isSearching={isSearching}
           />
         </div>
         {/* Results */}
