@@ -107,7 +107,7 @@ const Filter = ({
       <div className="col-span-full flex items-center w-full mt-8 justify-center">
         <Button
           text={isSearching ? "Searching..." : "Search My Vibes"}
-          onClick={onSearch}
+          onClick={() => onSearch?.()}
         ></Button>
       </div>
     </div>

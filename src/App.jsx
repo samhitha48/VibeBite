@@ -137,7 +137,13 @@ export default function App() {
 
   const handleSearch = useCallback(
     async (overrideFilters) => {
-      const activeFilters = overrideFilters ?? manualFilters;
+      const candidateFilters =
+        overrideFilters &&
+        typeof overrideFilters === "object" &&
+        typeof overrideFilters.preventDefault !== "function"
+          ? overrideFilters
+          : undefined;
+      const activeFilters = candidateFilters ?? manualFilters;
       const searchParams = buildSearchParams(activeFilters);
     setIsSearching(true);
     setSearchError("");
