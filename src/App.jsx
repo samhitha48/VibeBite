@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { Filter } from "./components/Filter/Filter";
 import Button from "./components/Button/Button";
 import Randomizer from "./components/Randomizer/Randomizer";
+import Card from "./components/Card/Card";
 
 const features = [
   {
@@ -23,6 +24,8 @@ const features = [
 
 export default function App() {
   const [showFilter, setShowFilter] = useState(false);
+  const [results, setResults] = useState([]);
+
   const [manualFilters, setManualFilters] = useState({
     location: "",
     categories: [],
@@ -88,6 +91,19 @@ export default function App() {
             onPriceChange={handlePriceChange}
           />
         </div>
+        {/* Results */}
+        {results.length > 0 && (
+          <>
+            <h2 className="col-span-full text-2xl font-bold px-6 mt-6">
+              Results
+            </h2>
+            <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4 px-6 pb-6">
+              {results.map((result) => (
+                <Card key={result.id} {...result} />
+              ))}
+            </div>
+          </>
+        )}
       </main>
       <footer className="flex justify-center py-4">
         &copy; {currentYear} VibeBite
