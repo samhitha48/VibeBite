@@ -31,28 +31,28 @@ export default function App() {
   };
 
   return (
-    <main className="grid grid-cols-12 gap-6 mx-auto max-w-[1440px] bg-white h-screen flex-col gap-12 rounded-lg shadow-md">
-      <section className="col-span-full flex flex-col text-center h-full">
-        <header className="flex justify-between items-between px-6 py-6 bg-primary-500 border-solid border-b-[8px] border-accent-brown">
+    <div className="h-screen flex flex-col bg-white">
+      <main className="grid grid-cols-12 grid-rows-[auto_auto_1fr] mx-auto max-w-[1440px] w-full rounded-lg shadow-md flex-1">
+        <header className="col-span-full flex justify-between items-center px-6 py-6 bg-primary-500 border-solid border-b-[8px] border-accent-brown">
           <p>Logo here</p>
         </header>
-        <div className="flex-1 space-y-6 text-center py-6">
-          <div id="buttons-container" className="flex gap-4 justify-center">
-            <Button onClick={toggleFilter} text="I'll pick what I want" />
-            <Randomizer />
-          </div>
-          <div
-            className={`overflow-hidden transition-all duration-500 ease-in-out py-3 ${
-              showFilter ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
-            }`}
-          >
-            <Filter />
-          </div>
+
+        <div className="col-span-full flex gap-4 justify-center py-6">
+          <Button onClick={toggleFilter} text="I'll pick what I want" />
+          <Randomizer />
         </div>
-        <footer className="flex justify-center py-4">
-          &copy; {currentYear} VibeBite
-        </footer>
-      </section>
-    </main>
+
+        <div
+          className={`col-span-full md:col-start-3 md:col-span-8 overflow-hidden transition-all duration-500 ease-in-out ${
+            showFilter ? "max-h-[2000px] opacity-100 py-3" : "max-h-0 opacity-0"
+          }`}
+        >
+          <Filter ratingValue={2} radiusValue={5} priceValue={3} />
+        </div>
+      </main>
+      <footer className="flex justify-center py-4">
+        &copy; {currentYear} VibeBite
+      </footer>
+    </div>
   );
 }
