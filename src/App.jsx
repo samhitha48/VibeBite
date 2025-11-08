@@ -79,7 +79,7 @@ export default function App() {
         </div>
 
         <div
-          className={`col-span-full md:col-start-3 md:col-span-8 overflow-hidden transition-all duration-500 ease-in-out ${
+          className={`col-span-full md:col-start-2 md:col-span-10 lg:col-start-3 lg:col-span-8 overflow-hidden transition-all duration-500 ease-in-out ${
             showFilter ? "max-h-[2000px] opacity-100 py-3" : "max-h-0 opacity-0"
           }`}
         >
