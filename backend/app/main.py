@@ -79,8 +79,8 @@ async def yelp_search(
         "price": price,
         "open_now": open_now,
     }
-    # Remove None values from params
-    params = {k: v for k, v in params.items() if v is not None}
+    # Remove None/empty values from params
+    params = {k: v for k, v in params.items() if v not in (None, "", [])}
 
     # Build a stable cache key from sorted params
     key_source = json.dumps(params, sort_keys=True, separators=(",", ":"))
@@ -118,10 +118,30 @@ async def dialogflow_es_webhook(request: Request):
     params_in = query_result.get("parameters", {}) or {}
 
     # Extract parameters from Dialogflow ES
-    location = params_in.get("location") or "Denver"
-    term = params_in.get("cuisine") or params_in.get("term") or "food"
+    # Normalize empty strings to None and sanitize the term
+    location = (params_in.get("location") or "").strip() or "Denver"
+    raw_term = (params_in.get("cuisine") or params_in.get("term") or "food").strip()
+
+    # Defensive cleanup of term like "find sushi in Denver" -> "sushi"
+    t = raw_term
+    tl = t.lower()
+    if tl.startswith("find "):
+        t = t[5:]
+    t = t.split(" in ", 1)[0].strip()
+    term = t or "food"
+
     price = params_in.get("price")
     open_now = params_in.get("open_now")
+
+    # Convert Dialogflow "" to None / coerce boolean text
+    if isinstance(price, str) and price.strip() == "":
+        price = None
+    if isinstance(open_now, str):
+        if open_now.strip() == "":
+            open_now = None
+        elif open_now.lower() in ("true", "false"):
+            open_now = open_now.lower() == "true"
+
     limit = 5
 
     # Prepare Yelp call (reuse env var)
@@ -138,8 +158,8 @@ async def dialogflow_es_webhook(request: Request):
         "price": price,
         "open_now": open_now,
     }
-    # Remove None values
-    params = {k: v for k, v in params.items() if v is not None}
+    # Remove None/empty values so Yelp doesn't get bad params
+    params = {k: v for k, v in params.items() if v not in (None, "", [])}
 
     # Cache key identical to /yelp/search behavior
     key_source = json.dumps(params, sort_keys=True, separators=(",", ":"))
@@ -157,8 +177,14 @@ async def dialogflow_es_webhook(request: Request):
             with _yelp_cache_lock:
                 _yelp_cache[cache_key] = data
             businesses = data.get("businesses", [])
-        except requests.RequestException:
-            return JSONResponse({"fulfillmentText": f"I couldn't reach Yelp right now. Please try again."})
+        except requests.RequestException as e:
+            # Log details to Render logs to help debug
+            print("Yelp request failed:", repr(e))
+            status = getattr(getattr(e, "response", None), "status_code", None)
+            msg = "I couldn't reach Yelp right now. Please try again."
+            if status:
+                msg = f"I couldn't reach Yelp (HTTP {status}). Please try again."
+            return JSONResponse({"fulfillmentText": msg})
 
     # Build a short, user-friendly response
     if not businesses:
