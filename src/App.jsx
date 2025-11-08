@@ -4,7 +4,6 @@ import Button from "./components/Button/Button";
 import Randomizer from "./components/Randomizer/Randomizer";
 import RandomSelection from "./components/RandomSelection/RandomSelection";
 import Card from "./components/Card/Card";
-import { getMoodFilters } from "./utils/moodHelpers";
 import logo from './images/logo.png'
 
 import { getMoodFilters, mergeMoodWithFilters } from "./utils/moodHelpers";
