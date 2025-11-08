@@ -8,34 +8,31 @@ from typing import Tuple
 from cachetools import TTLCache
 from fastapi.responses import JSONResponse
 from threading import Lock
+
 load_dotenv()  # Loads variables from a .env file if present
 
-# Cache up to 1000 distinct queries for 1 hour (3600s)
+# Cache up to 1000 distinct queries for 3 hours (10800s)
 YELP_CACHE_TTL_SECONDS = 10800
 YELP_CACHE_MAXSIZE = 1000
 _yelp_cache = TTLCache(maxsize=YELP_CACHE_MAXSIZE, ttl=YELP_CACHE_TTL_SECONDS)
 _yelp_cache_lock = Lock()
-# backend/app/main.py
-from fastapi import FastAPI
+
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+app = FastAPI(title="VibeBite API", version="0.1.0")
 
-# allow localhost and your Netlify/Render domains
+# Allow localhost + Netlify + Render
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://graceful-gingersnap-e9f2ff.netlify.app/"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://graceful-gingersnap-e9f2ff.netlify.app",
+        "https://vibebite-tddq.onrender.com",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.get("/health")
-def health():
-    return {"status": "ok"}
-
-# Project API
-app = FastAPI(title="VibeBite API", version="0.1.0")
 
 
 @app.get("/health", tags=["Health"])
@@ -45,18 +42,17 @@ async def health_check() -> dict[str, str]:
 
 @app.get("/vibes", tags=["Vibes"])
 async def list_vibes() -> dict[str, list[str]]:
-    """Return sample vibe names to keep the frontend unblocked."""
-    return {
-        "vibes": [
-            "Chill brunch",
-            "Sunset rooftop",
-            "Late-night coding",
-            "Rainy day focus",
-            "Dance-floor energy",
-        ]
-    }
+    mock_vibes = [
+        "Chill brunch",
+        "Sunset rooftop",
+        "Late-night coding",
+        "Rainy day focus",
+        "Dance-floor energy",
+    ]
+    return {"vibes": mock_vibes}
 
 
+@app.get("/yelp/search/", tags=["Yelp"])
 @app.get("/yelp/search", tags=["Yelp"])
 async def yelp_search(
     request: Request,
@@ -109,6 +105,7 @@ async def yelp_search(
 
 
 # Dialogflow ES Fulfillment webhook: queries Yelp and returns fulfillmentText
+@app.post("/dialogflow/es-webhook/", tags=["Dialogflow"])
 @app.post("/dialogflow/es-webhook", tags=["Dialogflow"])
 async def dialogflow_es_webhook(request: Request):
     """
