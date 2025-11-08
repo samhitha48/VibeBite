@@ -5,6 +5,7 @@ import Randomizer from "./components/Randomizer/Randomizer";
 import RandomSelection from "./components/RandomSelection/RandomSelection";
 import Card from "./components/Card/Card";
 import { getMoodFilters } from "./utils/moodHelpers";
+import logo from './images/logo.png'
 
 export default function App() {
   const [showFilter, setShowFilter] = useState(false);
@@ -207,8 +208,10 @@ export default function App() {
   return (
     <div className="h-screen flex flex-col bg-white">
       <main className="grid grid-cols-12 grid-rows-[auto_auto_1fr] mx-auto max-w-[1440px] w-full rounded-lg shadow-md flex-1">
-        <header className="col-span-full flex justify-between items-center px-6 py-6 bg-primary-500 border-solid border-b-[8px] border-accent-brown">
-          <p>Logo here</p>
+        <header className="col-span-full flex justify-center items-center px-6 py-6 bg-primary-500 border-solid border-b-[8px] border-accent-brown">
+          <h3 className="text-white text-5xl">Vibe</h3>
+          <img src={logo} alt="VibeBite Logo" className="h-[64px]" />
+          <h3 className="text-white text-5xl">Bite</h3>
         </header>
         <div className="col-span-full flex gap-4 justify-center py-6">
           <Button onClick={toggleFilter} text="I'll pick what I want" />
