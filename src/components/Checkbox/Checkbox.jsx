@@ -6,7 +6,7 @@ const Checkbox = ({
   checked = false,
 }) => {
   return (
-    <div className="relative">
+    <div className="relative group">
       <input
         type="checkbox"
         name={name}
@@ -22,6 +22,14 @@ const Checkbox = ({
         <span>{emoji}</span>
         <span>{name}</span>
       </label>
+
+      {/* Tooltip for desktop */}
+      <div className="hidden md:group-hover:block absolute z-10 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-lg -top-2 left-1/2 -translate-x-1/2 -translate-y-full w-64 pointer-events-none">
+        {description}
+        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
+      </div>
+
+      {/* Description for mobile (shown when checked) */}
       <p className="text-sm text-center md:hidden md:peer-checked:block">
         {description}
       </p>
