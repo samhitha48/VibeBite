@@ -2,7 +2,13 @@ import { useState } from "react";
 import { Checkbox } from "../Checkbox/Checkbox";
 
 const Filter = ({
-  filters = { location: "", categories: [], radius: 1600, price: 2 },
+  filters = {
+    location: "",
+    categories: [],
+    attributes: [],
+    radius: 1600,
+    price: 2,
+  },
   onLocationChange = () => {},
   onCuisineSelect = () => {},
   onRadiusChange = () => {},
