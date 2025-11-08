@@ -1,3 +1,5 @@
+import { Filter } from "./components/Filter/Filter";
+
 const features = [
   {
     title: "Curated Playlists",
@@ -27,6 +29,7 @@ export default function App() {
         </header>
         <div className="flex-1 space-y-6 text-center py-6">
           <p className="mx-auto max-w-2xl text-lg">This is VibeBite.</p>
+          <Filter />
         </div>
         <footer className="flex justify-center py-4">
           &copy; {currentYear} VibeBite
