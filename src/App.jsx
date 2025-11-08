@@ -73,9 +73,7 @@ export default function App() {
         : [...currentMoods, moodName];
 
       const aggregatedAttributes = Array.from(
-        new Set(
-          nextMoods.flatMap((mood) => getMoodFilters(mood).attributes)
-        )
+        new Set(nextMoods.flatMap((mood) => getMoodFilters(mood).attributes))
       );
 
       return {
@@ -91,10 +89,16 @@ export default function App() {
     if (manualFilters.location) {
       params.set("location", manualFilters.location);
     }
-    if (Array.isArray(manualFilters.categories) && manualFilters.categories.length) {
+    if (
+      Array.isArray(manualFilters.categories) &&
+      manualFilters.categories.length
+    ) {
       params.set("categories", manualFilters.categories.join(","));
     }
-    if (Array.isArray(manualFilters.attributes) && manualFilters.attributes.length) {
+    if (
+      Array.isArray(manualFilters.attributes) &&
+      manualFilters.attributes.length
+    ) {
       params.set("attributes", manualFilters.attributes.join(","));
     }
     if (Array.isArray(manualFilters.moods) && manualFilters.moods.length) {
@@ -244,7 +248,7 @@ export default function App() {
             randomSelection={randomSelection}
             onRadiusChange={handleRadiusChange}
             onLocationChange={handleLocationChange}
-            handleSubmit={handleSubmit}
+            handleSubmit={handleSearch}
             filters={manualFilters}
           />
         </div>

@@ -1,6 +1,6 @@
 .card {
   height: 400px;
-  width: 400px;
+  width: 100%;
   border: 1px solid black;
   border-radius: 4px;
   overflow: auto;
@@ -42,9 +42,12 @@
   flex-wrap: wrap;
   gap: 12px;
   justify-content: flex-start;
+  overflow-y: auto;
+  max-height: 45px;
 }
 
 .a-vibe {
+  font-size: 14px;
   width: fit-content;
   min-width: 95px;
   padding: 8px 12px;
