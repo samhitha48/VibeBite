@@ -13,13 +13,25 @@ const OPTIONS = [
   "☕️ Cozy",
 ];
 
-export default function Randomizer() {
+export default function Randomizer({
+  setShowFilter,
+  showFilter,
+  randomSelection,
+  setRandomSelection,
+}) {
   const handleRandomize = useCallback(() => {
+    if (randomSelection) {
+      setRandomSelection(null);
+      return;
+    }
     const randomIndex = Math.floor(Math.random() * OPTIONS.length);
     const selected = OPTIONS[randomIndex];
-    console.log("Randomizer picked:", selected);
-  }, []);
+
+    if (showFilter) {
+      setShowFilter(false);
+    }
+    setRandomSelection(selected);
+  }, [randomSelection, showFilter]);
 
   return <Button text="Pick for me" onClick={handleRandomize} />;
 }
-

@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { Filter } from "./components/Filter/Filter";
 import Button from "./components/Button/Button";
 import Randomizer from "./components/Randomizer/Randomizer";
+import RandomSelection from "./components/RandomSelection/RandomSelection";
 import Card from "./components/Card/Card";
 
 export default function App() {
@@ -15,10 +16,12 @@ export default function App() {
     radius: 5,
     price: 2,
   });
+  const [randomSelection, setRandomSelection] = useState(null);
   const date = new Date();
   const currentYear = date.getFullYear();
 
   const toggleFilter = () => {
+    if (randomSelection) setRandomSelection(null);
     setShowFilter((prev) => !prev);
   };
 
@@ -57,6 +60,11 @@ export default function App() {
     }));
   }, []);
 
+  const handleSubmit = () => {
+    console.log("submitted");
+    //post to api
+  };
+
   return (
     <div className="h-screen flex flex-col bg-white">
       <main className="grid grid-cols-12 grid-rows-[auto_auto_1fr] mx-auto max-w-[1440px] w-full rounded-lg shadow-md flex-1">
@@ -65,9 +73,13 @@ export default function App() {
         </header>
         <div className="col-span-full flex gap-4 justify-center py-6">
           <Button onClick={toggleFilter} text="I'll pick what I want" />
-          <Randomizer />
+          <Randomizer
+            setShowFilter={setShowFilter}
+            showFilter={showFilter}
+            randomSelection={randomSelection}
+            setRandomSelection={setRandomSelection}
+          />
         </div>
-
         <div
           className={`col-span-full md:col-start-2 md:col-span-10 lg:col-start-3 lg:col-span-8 overflow-hidden transition-all duration-500 ease-in-out ${
             showFilter ? "max-h-[2000px] opacity-100 py-3" : "max-h-0 opacity-0"
@@ -79,6 +91,23 @@ export default function App() {
             onCuisineSelect={handleCuisineSelect}
             onRadiusChange={handleRadiusChange}
             onPriceChange={handlePriceChange}
+          />
+        </div>
+
+        <div
+          className={`col-span-full md:col-start-3 md:col-span-8 overflow-hidden transition-all duration-500 ease-in-out ${
+            randomSelection
+              ? "max-h-[2000px] opacity-100 py-3"
+              : "max-h-0 opacity-0"
+          }`}
+        >
+          <RandomSelection
+            showFilter={showFilter}
+            randomSelection={randomSelection}
+            onRadiusChange={handleRadiusChange}
+            onLocationChange={handleLocationChange}
+            handleSubmit={handleSubmit}
+            filters={manualFilters}
           />
         </div>
         {/* Results */}
