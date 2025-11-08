@@ -52,6 +52,11 @@ export default function Card({
     return stars;
   }, []);
 
+  const displayDistance =
+    typeof distance === "number" && Number.isFinite(distance)
+      ? distance.toFixed(1)
+      : distance || "--";
+
   const openWebsite = () => {
     window.open(siteLink, "_blank");
   };
@@ -66,10 +71,10 @@ export default function Card({
           <p>{name}</p>
           <p>{expense}</p>
         </div>
-        <p className="distance">{`${distance} mi`}</p>
+        <p className="distance">{`${displayDistance} mi`}</p>
         <div className="vibes-container">
           {vibes?.map((vibe) => (
-            <div className="a-vibe">
+            <div key={vibe} className="a-vibe">
               <p>{vibe}</p>
             </div>
           ))}

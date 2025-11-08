@@ -1,8 +1,12 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
-export default function LocationInput({ onValidLocation }) {
-  const [value, setValue] = useState("");
+export default function LocationInput({ value: externalValue = "", onValidLocation }) {
+  const [value, setValue] = useState(externalValue);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    setValue(externalValue);
+  }, [externalValue]);
 
   const validate = useCallback(
     (input) => {

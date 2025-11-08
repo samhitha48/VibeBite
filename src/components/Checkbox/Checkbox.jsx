@@ -1,4 +1,10 @@
-const Checkbox = ({ name, description, emoji, callback }) => {
+const Checkbox = ({
+  name,
+  description,
+  emoji,
+  callback,
+  checked = false,
+}) => {
   return (
     <div className="relative group">
       <input
@@ -7,6 +13,7 @@ const Checkbox = ({ name, description, emoji, callback }) => {
         id={name}
         className="peer sr-only"
         onChange={() => callback(name)}
+        checked={checked}
       />
       <label
         htmlFor={name}
