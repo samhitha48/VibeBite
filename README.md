@@ -1,6 +1,6 @@
 # VibeBite
 
-Simple React + Tailwind frontend (Vite) and FastAPI backend starter.
+Simple React + Tailwind starter powered by Vite with a companion FastAPI backend.
 
 ## Quick Setup
 
@@ -34,7 +34,7 @@ The helper script installs Node dependencies, creates `backend/.venv`, and insta
    npm run build
    ```
 
-   Netlify can deploy the contents of the generated `dist/` directory.
+   Netlify deploys the contents of the generated `dist/` directory using the provided `netlify.toml`.
 
 ## Backend (FastAPI)
 
@@ -58,23 +58,33 @@ The helper script installs Node dependencies, creates `backend/.venv`, and insta
    uvicorn app.main:app --reload
    ```
 
-   The API is available at `http://127.0.0.1:8000` with docs at `/docs`.
+   The API is available at `http://127.0.0.1:8000` with docs at `/docs`. A simple `/health` endpoint is provided for uptime checks.
 
-## Netlify Deployment
+## Deploying the Backend (Render.com example)
 
-- `netlify.toml` is preconfigured so Netlify runs `npm run build` and publishes the `dist/` directory.
-- The build environment pins Node 20 and Python 3.11 (useful if you later add build-time scripts that depend on Python).
-- Deploy by connecting the repository to Netlify or running:
+The repo includes a `render.yaml` blueprint that provisions a Python web service on Render.
 
-  ```sh
-  netlify deploy --build
-  ```
+1. Commit and push the repo to GitHub (or another Git provider supported by Render).
+2. In the Render dashboard choose **Blueprint** → **New Blueprint Instance** → connect the repository.
+3. Render reads `render.yaml` and creates a service that:
+   - Installs dependencies via `cd backend && pip install -r requirements.txt`
+   - Starts Uvicorn with `cd backend && uvicorn app.main:app --host 0.0.0.0 --port 8000`
+   - Performs health checks against `/health`
+   - Pins Python 3.11.8
+4. Set any required environment variables in the Render dashboard (mirroring what you would store locally in `.env`).
+5. Deploy. The rendered URL can be used from the VibeBite frontend once CORS or routing is configured.
 
-### Backend deployment
+## Deploying the Frontend (Netlify)
 
-Netlify hosts the frontend only. Run the FastAPI backend on a separate service (e.g., Fly.io, Render, Railway, or a traditional VM) and point your frontend API calls to that host. For local development you can run both with:
+1. Ensure `npm run build` succeeds locally.
+2. Connect the repository to Netlify (or push via `netlify deploy --build`).
+3. Netlify uses the included `netlify.toml`:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+   - Netlify dev proxy to Vite on port 5173 for local previews.
 
-```sh
-npm run dev          # frontend on http://localhost:5173
-uvicorn app.main:app --reload  # backend on http://127.0.0.1:8000
-```
+## Notes
+
+- Keep the backend service URL in an environment variable (e.g., `VITE_API_BASE_URL`) when connecting the frontend.
+- Remember to add `.venv`, build artifacts, and other generated files to `.gitignore` (already configured).
+- Update `render.yaml` service name or plan before production deployment if necessary.
