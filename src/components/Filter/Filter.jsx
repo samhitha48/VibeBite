@@ -6,7 +6,13 @@ import Slider from "../Slider/Slider";
 import Button from "../Button/Button";
 
 const Filter = ({
-  filters = { location: "", categories: [], radius: 1600, price: 2 },
+  filters = {
+    location: "",
+    categories: [],
+    attributes: [],
+    radius: 1600,
+    price: 2,
+  },
   onLocationChange = () => {},
   onCuisineSelect = () => {},
   onRadiusChange = () => {},

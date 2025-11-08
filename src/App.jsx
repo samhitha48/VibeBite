@@ -4,24 +4,6 @@ import Button from "./components/Button/Button";
 import Randomizer from "./components/Randomizer/Randomizer";
 import Card from "./components/Card/Card";
 
-const features = [
-  {
-    title: "Curated Playlists",
-    description:
-      "Fuel every gathering with playlists that match the mood and keep the vibes high.",
-  },
-  {
-    title: "Crowd-Sourced Favorites",
-    description:
-      "Let your crew vote, request, and remix the soundtrack in real time.",
-  },
-  {
-    title: "Instant Ambience",
-    description:
-      "Pair food, lighting, and music recommendations tuned for your venue.",
-  },
-];
-
 export default function App() {
   const [showFilter, setShowFilter] = useState(false);
   const [results, setResults] = useState([]);
@@ -29,6 +11,7 @@ export default function App() {
   const [manualFilters, setManualFilters] = useState({
     location: "",
     categories: [],
+    attributes: [],
     radius: 5,
     price: 2,
   });
@@ -47,9 +30,16 @@ export default function App() {
   }, []);
 
   const handleCuisineSelect = useCallback((selectedAlias) => {
+    const normalizedCategories = selectedAlias
+      ? selectedAlias
+          .split(",")
+          .map((alias) => alias.trim())
+          .filter(Boolean)
+      : [];
+
     setManualFilters((prev) => ({
       ...prev,
-      categories: selectedAlias ? [selectedAlias] : [],
+      categories: normalizedCategories,
     }));
   }, []);
 
