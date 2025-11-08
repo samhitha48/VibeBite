@@ -2,6 +2,16 @@
 
 Simple React + Tailwind starter powered by Vite with a companion FastAPI backend.
 
+## Quick Setup
+
+From the repository root, run:
+
+```sh
+npm run setup
+```
+
+The helper script installs Node dependencies, creates `backend/.venv`, and installs the FastAPI requirements. It relies on `python3` (or `python`) being available on your PATH.
+
 ## Frontend (React + Vite)
 
 1. Install dependencies:
