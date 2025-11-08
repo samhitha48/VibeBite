@@ -11,7 +11,6 @@ const Filter = ({
   onCuisineSelect = () => {},
   onRadiusChange = () => {},
   onPriceChange = () => {},
-
 }) => {
   const [moods, setMoods] = useState([]);
   const [distance, setDistance] = useState(5);
@@ -83,7 +82,6 @@ const Filter = ({
       ? filters.price
       : 2;
 
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4 p-6 mb-6 shadow-[0_0_15px_rgba(0,0,0,0.3)] rounded-lg">
       <div className="col-span-full">
@@ -109,8 +107,8 @@ const Filter = ({
           />
         );
       })}
-      <div className="col-span-full mt-4">
-        <h3 className="block text-2xl w-full text-left">
+      <div className="col-span-full mt-6">
+        <h3 className="block text-2xl w-full text-left mb-4">
           Filter Options - Drop your location (and any extras if you want), and
           I’ll handle the rest.
         </h3>
@@ -118,7 +116,7 @@ const Filter = ({
           <LocationInput onValidLocation={onLocationChange} />
           <CuisineDropdown onSelect={onCuisineSelect} />
         </div>
-        <div className="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <Slider
             label="Location (zip code)"
             measurement="meters"
@@ -137,12 +135,12 @@ const Filter = ({
             value={priceValue}
             valueSetter={onPriceChange}
           />
-          <Slider
+          {/* <Slider
             label="Rating"
             measurement="stars"
             value={rating}
             valueSetter={onRatingChange}
-          />
+          /> */}
         </div>
       </div>
       <div className="col-span-full flex items-center w-full mt-8 justify-center">
