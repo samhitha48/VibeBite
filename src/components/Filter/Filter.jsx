@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Checkbox } from "../Checkbox/Checkbox";
 
-const Filter = () => {
+const Filter = ({
+  filters = { location: "", categories: [], radius: 1600, price: 2 },
+  onLocationChange = () => {},
+  onCuisineSelect = () => {},
+  onRadiusChange = () => {},
+  onPriceChange = () => {},
+}) => {
   const [moods, setMoods] = useState([]);
 
   const handleMood = (mood) => {
@@ -56,6 +62,16 @@ const Filter = () => {
       emoji: "☕",
     },
   ];
+
+  const radiusValue =
+    typeof filters.radius === "number" && Number.isFinite(filters.radius)
+      ? filters.radius
+      : 1600;
+
+  const priceValue =
+    typeof filters.price === "number" && Number.isFinite(filters.price)
+      ? filters.price
+      : 2;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4 p-6 shadow-[0_0_15px_rgba(0,0,0,0.3)] rounded-lg">
