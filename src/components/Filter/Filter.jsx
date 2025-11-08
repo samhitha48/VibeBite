@@ -57,10 +57,20 @@ const Filter = () => {
     },
   ];
 
-  console.log(moodList);
-  console.log("mood", moods);
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4 p-6 shadow-[0_0_15px_rgba(0,0,0,0.3)] rounded-lg">
+      <div className="col-span-full">
+        <h3 className="block text-2xl w-full text-left">
+          Pick a mood that fits your craving — you’ll get a quick description to
+          guide your choice.
+        </h3>
+        <p className="block w-full text-left">
+          Drop your location (and any extras if you want), and I’ll handle the
+          rest. Drop your location (and any extras if you want), and I’ll handle
+          the rest. Then add your location and any filters to fine-tune your
+          food match.
+        </p>
+      </div>
       {moodList.map((item) => {
         return (
           <Checkbox
