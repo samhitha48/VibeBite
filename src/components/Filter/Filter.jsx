@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { Checkbox } from "../Checkbox/Checkbox";
+import CuisineDropdown from "../Input/CuisineDropdown";
+import LocationInput from "../Input/LocationInput";
+import Slider from "../Slider/Slider";
+import Button from "../Button/Button";
 
 const Filter = ({
   filters = { location: "", categories: [], radius: 1600, price: 2 },
@@ -9,6 +13,9 @@ const Filter = ({
   onPriceChange = () => {},
 }) => {
   const [moods, setMoods] = useState([]);
+  const [distance, setDistance] = useState(5);
+  const [price, setPrice] = useState(2);
+  const [rating, setRating] = useState(3);
 
   const handleMood = (mood) => {
     setMoods((prev) =>
@@ -63,6 +70,8 @@ const Filter = ({
     },
   ];
 
+  const submitSearch = () => {};
+
   const radiusValue =
     typeof filters.radius === "number" && Number.isFinite(filters.radius)
       ? filters.radius
@@ -74,7 +83,7 @@ const Filter = ({
       : 2;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4 p-6 shadow-[0_0_15px_rgba(0,0,0,0.3)] rounded-lg">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-4 p-6 mb-6 shadow-[0_0_15px_rgba(0,0,0,0.3)] rounded-lg">
       <div className="col-span-full">
         <h3 className="block text-2xl w-full text-left">
           Pick a mood that fits your craving — you’ll get a quick description to
@@ -98,6 +107,45 @@ const Filter = ({
           />
         );
       })}
+      <div className="col-span-full mt-6">
+        <h3 className="block text-2xl w-full text-left mb-4">
+          Filter Options - Drop your location (and any extras if you want), and
+          I’ll handle the rest.
+        </h3>
+        <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-4">
+          <LocationInput onValidLocation={onLocationChange} />
+          <CuisineDropdown onSelect={onCuisineSelect} />
+        </div>
+        <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <Slider
+            label="Location (zip code)"
+            measurement="meters"
+            min={400}
+            max={40000}
+            step={400}
+            value={radiusValue}
+            valueSetter={onRadiusChange}
+          />
+          <Slider
+            label="Price"
+            measurement="$"
+            min={1}
+            max={4}
+            step={1}
+            value={priceValue}
+            valueSetter={onPriceChange}
+          />
+          {/* <Slider
+            label="Rating"
+            measurement="stars"
+            value={rating}
+            valueSetter={onRatingChange}
+          /> */}
+        </div>
+      </div>
+      <div className="col-span-full flex items-center w-full mt-8 justify-center">
+        <Button text="Search My Vibes" onClick={submitSearch}></Button>
+      </div>
     </div>
   );
 };
