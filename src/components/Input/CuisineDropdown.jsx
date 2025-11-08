@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import cuisines from "../../data/cuisines.json";
 
 const PLACEHOLDER_OPTION = {
@@ -6,8 +6,12 @@ const PLACEHOLDER_OPTION = {
   label: "Pick a type of cuisine",
 };
 
-export default function CuisineDropdown({ onSelect }) {
-  const [selectedAlias, setSelectedAlias] = useState("");
+export default function CuisineDropdown({ value = "", onSelect }) {
+  const [selectedAlias, setSelectedAlias] = useState(value);
+
+  useEffect(() => {
+    setSelectedAlias(value);
+  }, [value]);
 
   const options = useMemo(() => {
     if (!cuisines?.core?.length) {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import moodData from "../../data/moods.json";
 import { Checkbox } from "../Checkbox/Checkbox";
 import CuisineDropdown from "../Input/CuisineDropdown";
 import LocationInput from "../Input/LocationInput";
@@ -10,78 +10,25 @@ const Filter = ({
     location: "",
     categories: [],
     attributes: [],
-    radius: 1600,
+    radius: 5,
     price: 2,
+    moods: [],
   },
   onLocationChange = () => {},
   onCuisineSelect = () => {},
   onRadiusChange = () => {},
   onPriceChange = () => {},
+  onMoodToggle = () => {},
+  onSearch = () => {},
+  isSearching = false,
 }) => {
-  const [moods, setMoods] = useState([]);
-  const [distance, setDistance] = useState(5);
-  const [price, setPrice] = useState(2);
-  const [rating, setRating] = useState(3);
-
-  const handleMood = (mood) => {
-    setMoods((prev) =>
-      prev.includes(mood) ? prev.filter((m) => m !== mood) : [...prev, mood]
-    );
-  };
-  const moodList = [
-    {
-      name: "Celebration",
-      description: "Big wins, birthdays, or nights worth toasting.",
-      emoji: "🎉",
-    },
-    {
-      name: "Treat Yourself",
-      description: "Decadent desserts, cocktails, or fine dining indulgence.",
-      emoji: "🍰",
-    },
-    {
-      name: "Spicy",
-      description: "Turn up the heat - bold flavors and fiery dishes.",
-      emoji: "️🌶",
-    },
-    {
-      name: "Fall Feels",
-      description: "Warm flavors, comfort dishes, pumpkin everything.",
-      emoji: "🍂",
-    },
-    {
-      name: "Light 'n' Fresh",
-      description: "Salads, wraps, smoothies. Something crisp and clean.",
-      emoji: "🥗",
-    },
-    {
-      name: "Date Night",
-      description: "Romantic ambiance, good wine, and shared plates.",
-      emoji: "💕",
-    },
-    {
-      name: "Greasy Goodness",
-      description: "Burgers, fries, and all the cheat-day eats.",
-      emoji: "🍔",
-    },
-    {
-      name: "Quick & Easy",
-      description: "Fast, easy, and satisfying when you’re on the go.",
-      emoji: "⚡",
-    },
-    {
-      name: "Cozy",
-      description: "Warm soups, comfort food, and chill café vibes.",
-      emoji: "☕",
-    },
-  ];
-
-  const submitSearch = () => {};
+  const selectedMoods = Array.isArray(filters.moods) ? filters.moods : [];
+  const moodList = Array.isArray(moodData?.mood_map) ? moodData.mood_map : [];
 
   const radiusValue =
     typeof filters.radius === "number" && Number.isFinite(filters.radius)
       ? filters.radius
-      : 1600;
+      : 5;
 
   const priceValue =
     typeof filters.price === "number" && Number.isFinite(filters.price)
@@ -103,13 +50,15 @@ const Filter = ({
         </p>
       </div>
       {moodList.map((item) => {
+        const moodName = item.mood;
         return (
           <Checkbox
-            key={item.name}
-            name={item.name}
+            key={moodName}
+            name={moodName}
             description={item.description}
             emoji={item.emoji}
-            callback={handleMood}
+            callback={onMoodToggle}
+            checked={selectedMoods.includes(moodName)}
           />
         );
       })}
@@ -119,16 +68,22 @@ const Filter = ({
           I’ll handle the rest.
         </h3>
         <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-4">
-          <LocationInput onValidLocation={onLocationChange} />
-          <CuisineDropdown onSelect={onCuisineSelect} />
+          <LocationInput
+            value={filters.location ?? ""}
+            onValidLocation={onLocationChange}
+          />
+          <CuisineDropdown
+            value={Array.isArray(filters.categories) ? filters.categories[0] ?? "" : ""}
+            onSelect={onCuisineSelect}
+          />
         </div>
         <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <Slider
-            label="Location (zip code)"
-            measurement="meters"
-            min={400}
-            max={40000}
-            step={400}
+            label="Distance"
+            measurement="miles"
+            min={5}
+            max={100}
+            step={1}
             value={radiusValue}
             valueSetter={onRadiusChange}
           />
@@ -150,7 +105,10 @@ const Filter = ({
         </div>
       </div>
       <div className="col-span-full flex items-center w-full mt-8 justify-center">
-        <Button text="Search My Vibes" onClick={submitSearch}></Button>
+        <Button
+          text={isSearching ? "Searching..." : "Search My Vibes"}
+          onClick={onSearch}
+        ></Button>
       </div>
     </div>
   );

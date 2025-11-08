@@ -1,12 +1,15 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Filter } from "./components/Filter/Filter";
 import Button from "./components/Button/Button";
 import Randomizer from "./components/Randomizer/Randomizer";
 import Card from "./components/Card/Card";
+import { getMoodFilters } from "./utils/moodHelpers";
 
 export default function App() {
   const [showFilter, setShowFilter] = useState(false);
   const [results, setResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState("");
 
   const [manualFilters, setManualFilters] = useState({
     location: "",
@@ -14,6 +17,7 @@ export default function App() {
     attributes: [],
     radius: 5,
     price: 2,
+    moods: [],
   });
   const date = new Date();
   const currentYear = date.getFullYear();
@@ -57,6 +61,142 @@ export default function App() {
     }));
   }, []);
 
+  const handleMoodToggle = useCallback((moodName) => {
+    setManualFilters((prev) => {
+      const currentMoods = Array.isArray(prev.moods) ? prev.moods : [];
+      const hasMood = currentMoods.includes(moodName);
+      const nextMoods = hasMood
+        ? currentMoods.filter((existing) => existing !== moodName)
+        : [...currentMoods, moodName];
+
+      const aggregatedAttributes = Array.from(
+        new Set(
+          nextMoods.flatMap((mood) => getMoodFilters(mood).attributes)
+        )
+      );
+
+      return {
+        ...prev,
+        moods: nextMoods,
+        attributes: aggregatedAttributes,
+      };
+    });
+  }, []);
+
+  const searchParams = useMemo(() => {
+    const params = new URLSearchParams();
+    if (manualFilters.location) {
+      params.set("location", manualFilters.location);
+    }
+    if (Array.isArray(manualFilters.categories) && manualFilters.categories.length) {
+      params.set("categories", manualFilters.categories.join(","));
+    }
+    if (Array.isArray(manualFilters.attributes) && manualFilters.attributes.length) {
+      params.set("attributes", manualFilters.attributes.join(","));
+    }
+    if (Array.isArray(manualFilters.moods) && manualFilters.moods.length) {
+      params.set("moods", manualFilters.moods.join(","));
+    }
+    if (manualFilters.radius) {
+      params.set("radius", `${manualFilters.radius}`);
+    }
+    if (manualFilters.price) {
+      params.set("price", `${manualFilters.price}`);
+    }
+    return params;
+  }, [manualFilters]);
+
+  const handleSearch = useCallback(async () => {
+    setIsSearching(true);
+    setSearchError("");
+    try {
+      const response = await fetch(
+        `https://vibebite-tddq.onrender.com/yelp/search?${searchParams.toString()}`
+      );
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+      const data = await response.json();
+
+      console.log(data);
+      const businesses = Array.isArray(data?.businesses)
+        ? data.businesses
+        : Array.isArray(data?.vibes)
+        ? data.vibes
+        : Array.isArray(data)
+        ? data
+        : [];
+
+      const PLACEHOLDER_IMAGE =
+        "https://via.placeholder.com/400x300.png?text=VibeBite";
+
+      const mappedResults = businesses
+        .map((entry, index) => {
+          if (!entry) {
+            return null;
+          }
+
+          if (typeof entry === "string") {
+            return {
+              id: `vibe-${index}`,
+              image: PLACEHOLDER_IMAGE,
+              name: entry,
+              expense: "",
+              distance: "",
+              vibes: [entry],
+              starRating: 0,
+              siteLink: "#",
+            };
+          }
+
+          const {
+            id,
+            alias,
+            name,
+            image_url,
+            price,
+            distance,
+            rating,
+            url,
+            categories,
+          } = entry;
+
+          const distanceInMiles =
+            typeof distance === "number" && Number.isFinite(distance)
+              ? Number((distance / 1609.34).toFixed(1))
+              : "";
+
+          const vibeLabels = Array.isArray(categories)
+            ? categories
+                .map((category) => category?.title)
+                .filter(Boolean)
+                .slice(0, 3)
+            : [];
+
+          return {
+            id: id ?? alias ?? `business-${index}`,
+            image: image_url ?? PLACEHOLDER_IMAGE,
+            name: name ?? "Unknown",
+            expense: price ?? "",
+            distance: distanceInMiles,
+            vibes: vibeLabels,
+            starRating: rating ?? 0,
+            siteLink: url ?? "#",
+          };
+        })
+        .filter(Boolean);
+
+      setResults(mappedResults);
+    } catch (error) {
+      setSearchError(
+        error instanceof Error ? error.message : "Something went wrong"
+      );
+      setResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  }, [searchParams]);
+
   return (
     <div className="h-screen flex flex-col bg-white">
       <main className="grid grid-cols-12 grid-rows-[auto_auto_1fr] mx-auto max-w-[1440px] w-full rounded-lg shadow-md flex-1">
@@ -79,9 +219,17 @@ export default function App() {
             onCuisineSelect={handleCuisineSelect}
             onRadiusChange={handleRadiusChange}
             onPriceChange={handlePriceChange}
+            onMoodToggle={handleMoodToggle}
+            onSearch={handleSearch}
+            isSearching={isSearching}
           />
         </div>
         {/* Results */}
+        {searchError && (
+          <p className="col-span-full text-center text-red-600 font-semibold">
+            {searchError}
+          </p>
+        )}
         {results.length > 0 && (
           <>
             <h2 className="col-span-full text-2xl font-bold px-6 mt-6">
