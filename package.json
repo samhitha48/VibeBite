@@ -4,6 +4,7 @@
   "description": "VibeBite React app with Tailwind CSS",
   "type": "module",
   "scripts": {
+    "setup": "bash scripts/setup.sh",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
