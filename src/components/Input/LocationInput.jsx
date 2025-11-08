@@ -39,7 +39,7 @@ export default function LocationInput({ onValidLocation }) {
           id="location-input"
           type="text"
           inputMode="text"
-          placeholder="Enter ZIP code or address"
+          placeholder="Enter ZIP code, city, or address"
           value={value}
           onChange={handleChange}
           className="mt-1 w-full max-w-md rounded-md border border-slate-300 px-4 py-2 text-base shadow-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
