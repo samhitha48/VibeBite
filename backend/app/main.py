@@ -26,7 +26,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://graceful-gingersnap-e9f2ff.netlify.app",
+        "https://candid-cheesecake-5e101c.netlify.app",
         "https://vibebite-tddq.onrender.com",
     ],
     allow_credentials=True,
