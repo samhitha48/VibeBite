@@ -1,3 +1,4 @@
+import { Filter } from "./components/Filter/Filter"
 import Button from "./components/Button/Button";
 import Randomizer from "./components/Randomizer/Randomizer";
 
@@ -34,6 +35,7 @@ export default function App() {
             <Randomizer />
           </div>
           <p className="mx-auto max-w-2xl text-lg">This is VibeBite.</p>
+          <Filter />
         </div>
         <footer className="flex justify-center py-4">
           &copy; {currentYear} VibeBite
